@@ -21,6 +21,7 @@ import { bail } from './helpers/utility.helpers';
 async function test(testName: string) {
   const sourceFilePath = path.join('.', 'e2e', testName, 'input.src');
   const expectedJsPath = path.join('.', 'e2e', testName, 'output.js');
+  const resultPath = path.join('.', 'e2e', testName, 'result.txt');
 
   const result = await execute(getTestCommand(`node ./dist-spec/toy-compiler-cli.js ${sourceFilePath}`), { stdio: 'pipe' }, false);
 
@@ -35,6 +36,15 @@ async function test(testName: string) {
   if (actualJs !== expectedJs) {
     console.log(formatPath(diff.createTwoFilesPatch('actual.js', 'expected.js', actualJs, expectedJs, '', '')));
     bail(`The '${testName}' e2e test did not produce the expected JS result.`);
+  }
+
+  // The actual JS is correct, so just execute the expected JS for the result.
+  const actualResult = (await execute(`node ${expectedJsPath}`, { stdio: 'pipe' })).stdout;
+  const expectedResult = normalizeNewLines(fs.readFileSync(resultPath).toString());
+
+  if (actualResult !== expectedResult) {
+    console.log(formatPath(diff.createTwoFilesPatch('actual.txt', 'expected.txt', actualResult, expectedResult, '', '')));
+    bail(`The '${testName}' e2e test did not produce the expected result when executed.`);
   }
 }
 
