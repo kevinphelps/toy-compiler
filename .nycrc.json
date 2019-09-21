@@ -1,0 +1,7 @@
+{
+  "all": true,
+  "cache": false,
+  "extension": [".ts"],
+  "require": ["source-map-support/register", "ts-node/register"],
+  "exclude": ["**/*.d.ts", "**/*.spec.ts", "node_modules/**", "build/**", "coverage/**", "dist/**", "e2e/**"]
+}
