@@ -1,0 +1,40 @@
+{
+  "name": "toy-compiler",
+  "version": "0.0.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "tc": "./dist/toy-compiler-cli.js"
+  },
+  "repository": "https://github.com/kevinphelps/toy-compiler.git",
+  "author": "Kevin Phelps <KevinPhelps11@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "lint": "ts-node ./build/lint.ts",
+    "build": "ts-node ./build/build.ts",
+    "test": "ts-node ./build/test.ts",
+    "print-coverage": "istanbul report -t text",
+    "report-coverage": "cat ./coverage/lcov.info | codecov",
+    "prepublishOnly": "yarn run build"
+  },
+  "dependencies": {
+    "@types/diff": "4.0.2",
+    "diff": "4.0.1"
+  },
+  "devDependencies": {
+    "@types/jasmine": "3.4.0",
+    "@types/node": "12.7.5",
+    "@types/rimraf": "2.0.2",
+    "chalk": "2.4.2",
+    "codecov": "3.6.1",
+    "istanbul": "0.4.5",
+    "jasmine": "3.5.0",
+    "prettier": "1.18.2",
+    "remap-istanbul": "0.13.0",
+    "rimraf": "3.0.0",
+    "ts-node": "8.4.1",
+    "tslint": "5.20.0",
+    "tslint-consistent-codestyle": "1.15.1",
+    "typescript": "3.6.3"
+  }
+}
