@@ -17,16 +17,15 @@
     "report-coverage": "cat ./coverage/lcov.info | codecov",
     "prepublishOnly": "yarn run build"
   },
-  "dependencies": {
-    "@types/diff": "4.0.2",
-    "diff": "4.0.1"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "@types/diff": "4.0.2",
     "@types/jasmine": "3.4.0",
     "@types/node": "12.7.5",
     "@types/rimraf": "2.0.2",
     "chalk": "2.4.2",
     "codecov": "3.6.1",
+    "diff": "4.0.1",
     "istanbul": "0.4.5",
     "jasmine": "3.5.0",
     "prettier": "1.18.2",
