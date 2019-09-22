@@ -2,7 +2,7 @@ import { compile } from './toy-compiler';
 
 describe('compile', () => {
   it('should compile an empty program', () => {
-    expect(compile('')).toEqual('');
+    expect(compile('')).toEqual('\n');
   });
 
   it('should compile an empty function', () => {

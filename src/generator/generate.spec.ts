@@ -10,7 +10,7 @@ describe('generate', () => {
   });
 
   it('should generate an empty program', () => {
-    expect(generate(null)).toBe('');
+    expect(generate(null)).toBe('\n');
   });
 
   it('should generate an empty function', () => {
@@ -89,6 +89,27 @@ describe('generate', () => {
     );
 
     const js = 'function f() { g(x, 1, y(z)); }\n';
+
+    expect(generate(tree)).toBe(js);
+  });
+
+  it('should emit library functions', () => {
+    const tree = new DefNode(
+      'f',
+      [],
+      new FunctionCallNode('log', [new FunctionCallNode('add', [new IntegerLiteralNode(3), new IntegerLiteralNode(5)])])
+    );
+
+    const js =
+      'function f() { log(add(3, 5)); }\n\nfunction log(value){console.log(value);return value;}\nfunction add(x,y){return x+y;}\n';
+
+    expect(generate(tree)).toBe(js);
+  });
+
+  it('should only emit library functions that are used', () => {
+    const tree = new DefNode('f', [], new FunctionCallNode('add', [new IntegerLiteralNode(3), new IntegerLiteralNode(5)]));
+
+    const js = 'function f() { add(3, 5); }\n\nfunction add(x,y){return x+y;}\n';
 
     expect(generate(tree)).toBe(js);
   });
