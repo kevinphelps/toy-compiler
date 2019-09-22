@@ -1,5 +1,5 @@
 import { execute } from './helpers/shell.helpers';
-import { getRemapCoverageCommand, getTestCommand } from './helpers/test.helpers';
+import { getTestCommand } from './helpers/test.helpers';
 import { parseFlags } from './helpers/utility.helpers';
 
 interface Options {
@@ -15,23 +15,17 @@ const defaultOptionsFn = (args: Options) => ({
 const options = parseFlags(process.argv.slice(2), defaultOptionsFn);
 
 (async () => {
-  await execute('rimraf ./dist-spec ./coverage');
+  await execute('rimraf ./dist-spec ./coverage ./.nyc_output');
   await execute(`tsc --project ./tsconfig.spec.json`);
 
   if (options.unit) {
-    await unitTest();
+    await execute(getTestCommand('jasmine --config=jasmine.json'));
   }
 
   if (options.e2e) {
     await execute('ts-node ./build/e2e.ts');
   }
 
-  await execute('istanbul report -t lcov');
-  await execute('istanbul report -t text-summary');
-  await execute('istanbul check-coverage --statements 90 --branches 90 --functions 90 --lines 90');
+  await execute('nyc report --reporter=lcov --reporter=text');
+  await execute('nyc check-coverage --statements 90 --branches 90 --functions 90 --lines 90');
 })();
-
-async function unitTest() {
-  await execute(getTestCommand('unit', './node_modules/jasmine/bin/jasmine.js', '--config=jasmine.json'));
-  await execute(getRemapCoverageCommand('unit'));
-}

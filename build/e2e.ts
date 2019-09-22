@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import { execute } from './helpers/shell.helpers';
-import { getRemapCoverageCommand, getTestCommand } from './helpers/test.helpers';
+import { getTestCommand } from './helpers/test.helpers';
 import { bail } from './helpers/utility.helpers';
 
 (async () => {
@@ -19,12 +19,10 @@ import { bail } from './helpers/utility.helpers';
 })();
 
 async function test(testName: string) {
-  const testSet = `e2e-${testName}`;
-
   const sourceFilePath = path.join('.', 'e2e', testName, 'input.src');
   const expectedJsPath = path.join('.', 'e2e', testName, 'output.js');
 
-  const result = await execute(getTestCommand(testSet, './dist-spec/toy-compiler-cli.js', sourceFilePath), { stdio: 'pipe' }, false);
+  const result = await execute(getTestCommand(`node ./dist-spec/toy-compiler-cli.js ${sourceFilePath}`), { stdio: 'pipe' }, false);
 
   if (result.code !== 0) {
     console.log(result);
@@ -38,8 +36,6 @@ async function test(testName: string) {
     console.log(formatPath(diff.createTwoFilesPatch('actual.js', 'expected.js', actualJs, expectedJs, '', '')));
     bail(`The '${testName}' e2e test did not produce the expected JS result.`);
   }
-
-  await execute(getRemapCoverageCommand(testSet));
 }
 
 function normalizeNewLines(value: string) {

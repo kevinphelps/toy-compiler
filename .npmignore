@@ -2,8 +2,8 @@
 src/
 build/
 coverage/
+.nyc_output/
 
-.istanbul.yml
 .npmignore
 .travis.yml
 jasmine.json
