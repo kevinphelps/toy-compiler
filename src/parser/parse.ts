@@ -1,23 +1,27 @@
 import { Token, TokenType } from './../tokenizer/token';
-import { DefNode, ExpressionNode, FunctionCallNode, IntegerLiteralNode, VariableReferenceNode } from './nodes';
+import { DefNode, ExpressionNode, FunctionCallNode, IntegerLiteralNode, SourceFile, VariableReferenceNode } from './nodes';
 
 export function parse(tokens: Token[]) {
   tokens = [...tokens]; // preserve original array
 
   if (tokens.length) {
+    const definitions: DefNode[] = [];
+
     if (peek(TokenType.DefKeyword, tokens)) {
-      const defNode = parseDef(tokens);
+      while (peek(TokenType.DefKeyword, tokens)) {
+        definitions.push(parseDef(tokens));
+      }
 
       if (tokens.length) {
         throw new Error(getMessageWithToken('Expected end of program', tokens[0]));
       }
 
-      return defNode;
+      return new SourceFile(definitions);
     } else {
       throw new Error(getMessageWithToken("Expected 'def' keyword at start of program", tokens[0]));
     }
   } else {
-    return null as DefNode;
+    return null as SourceFile;
   }
 }
 

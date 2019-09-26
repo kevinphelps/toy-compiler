@@ -1,5 +1,5 @@
 import { Token, TokenType } from './../tokenizer/token';
-import { DefNode, FunctionCallNode, IntegerLiteralNode, VariableReferenceNode } from './nodes';
+import { DefNode, FunctionCallNode, IntegerLiteralNode, SourceFile, VariableReferenceNode } from './nodes';
 import { parse } from './parse';
 
 describe('parse', () => {
@@ -115,7 +115,26 @@ describe('parse', () => {
       new Token(TokenType.EndKeyword, 'end'),
     ];
 
-    const tree = new DefNode('f', [], null);
+    const tree = new SourceFile([new DefNode('f', [], null)]);
+
+    expect(parse(tokens)).toEqual(tree);
+  });
+
+  it('should parse multiple functions', () => {
+    const tokens = [
+      new Token(TokenType.DefKeyword, 'def'),
+      new Token(TokenType.Identifier, 'f'),
+      new Token(TokenType.OpenParen, '('),
+      new Token(TokenType.CloseParen, ')'),
+      new Token(TokenType.EndKeyword, 'end'),
+      new Token(TokenType.DefKeyword, 'def'),
+      new Token(TokenType.Identifier, 'g'),
+      new Token(TokenType.OpenParen, '('),
+      new Token(TokenType.CloseParen, ')'),
+      new Token(TokenType.EndKeyword, 'end'),
+    ];
+
+    const tree = new SourceFile([new DefNode('f', [], null), new DefNode('g', [], null)]);
 
     expect(parse(tokens)).toEqual(tree);
   });
@@ -130,7 +149,7 @@ describe('parse', () => {
       new Token(TokenType.EndKeyword, 'end'),
     ];
 
-    const tree = new DefNode('f', ['a'], null);
+    const tree = new SourceFile([new DefNode('f', ['a'], null)]);
 
     expect(parse(tokens)).toEqual(tree);
   });
@@ -149,7 +168,7 @@ describe('parse', () => {
       new Token(TokenType.EndKeyword, 'end'),
     ];
 
-    const tree = new DefNode('f', ['a', 'b', 'c'], null);
+    const tree = new SourceFile([new DefNode('f', ['a', 'b', 'c'], null)]);
 
     expect(parse(tokens)).toEqual(tree);
   });
@@ -166,7 +185,7 @@ describe('parse', () => {
       new Token(TokenType.EndKeyword, 'end'),
     ];
 
-    const tree = new DefNode('f', [], new FunctionCallNode('g', []));
+    const tree = new SourceFile([new DefNode('f', [], new FunctionCallNode('g', []))]);
 
     expect(parse(tokens)).toEqual(tree);
   });
@@ -184,7 +203,7 @@ describe('parse', () => {
       new Token(TokenType.EndKeyword, 'end'),
     ];
 
-    const tree = new DefNode('f', [], new FunctionCallNode('g', [new IntegerLiteralNode(1)]));
+    const tree = new SourceFile([new DefNode('f', [], new FunctionCallNode('g', [new IntegerLiteralNode(1)]))]);
 
     expect(parse(tokens)).toEqual(tree);
   });
@@ -202,7 +221,7 @@ describe('parse', () => {
       new Token(TokenType.EndKeyword, 'end'),
     ];
 
-    const tree = new DefNode('f', [], new FunctionCallNode('g', [new VariableReferenceNode('x')]));
+    const tree = new SourceFile([new DefNode('f', [], new FunctionCallNode('g', [new VariableReferenceNode('x')]))]);
 
     expect(parse(tokens)).toEqual(tree);
   });
@@ -222,7 +241,7 @@ describe('parse', () => {
       new Token(TokenType.EndKeyword, 'end'),
     ];
 
-    const tree = new DefNode('f', [], new FunctionCallNode('g', [new FunctionCallNode('h', [])]));
+    const tree = new SourceFile([new DefNode('f', [], new FunctionCallNode('g', [new FunctionCallNode('h', [])]))]);
 
     expect(parse(tokens)).toEqual(tree);
   });
@@ -247,15 +266,17 @@ describe('parse', () => {
       new Token(TokenType.EndKeyword, 'end'),
     ];
 
-    const tree = new DefNode(
-      'f',
-      [],
-      new FunctionCallNode('g', [
-        new VariableReferenceNode('x'),
-        new IntegerLiteralNode(1),
-        new FunctionCallNode('y', [new VariableReferenceNode('z')]),
-      ])
-    );
+    const tree = new SourceFile([
+      new DefNode(
+        'f',
+        [],
+        new FunctionCallNode('g', [
+          new VariableReferenceNode('x'),
+          new IntegerLiteralNode(1),
+          new FunctionCallNode('y', [new VariableReferenceNode('z')]),
+        ])
+      ),
+    ]);
 
     expect(parse(tokens)).toEqual(tree);
   });

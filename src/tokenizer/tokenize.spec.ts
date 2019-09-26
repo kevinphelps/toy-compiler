@@ -32,6 +32,25 @@ describe('tokenize', () => {
     expect(tokenize(code)).toEqual(tokens);
   });
 
+  it('should tokenize multiple functions', () => {
+    const code = 'def f() end\ndef g() end';
+
+    const tokens = [
+      new Token(TokenType.DefKeyword, 'def'),
+      new Token(TokenType.Identifier, 'f'),
+      new Token(TokenType.OpenParen, '('),
+      new Token(TokenType.CloseParen, ')'),
+      new Token(TokenType.EndKeyword, 'end'),
+      new Token(TokenType.DefKeyword, 'def'),
+      new Token(TokenType.Identifier, 'g'),
+      new Token(TokenType.OpenParen, '('),
+      new Token(TokenType.CloseParen, ')'),
+      new Token(TokenType.EndKeyword, 'end'),
+    ];
+
+    expect(tokenize(code)).toEqual(tokens);
+  });
+
   it('should tokenize a function that has a name that starts with a keyword', () => {
     const code = 'def define() end';
 

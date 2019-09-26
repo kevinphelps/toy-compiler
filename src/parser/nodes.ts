@@ -1,3 +1,9 @@
+export class SourceFile {
+  readonly __sourceFile: never;
+
+  constructor(readonly definitions: DefNode[]) {}
+}
+
 export abstract class ExpressionNode {
   readonly __expression: never;
 }

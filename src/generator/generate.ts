@@ -1,9 +1,9 @@
 import { inspect } from 'util';
 
 import { libraryFunctions } from './../library/library';
-import { DefNode, ExpressionNode, FunctionCallNode, IntegerLiteralNode, VariableReferenceNode } from './../parser/nodes';
+import { DefNode, ExpressionNode, FunctionCallNode, IntegerLiteralNode, SourceFile, VariableReferenceNode } from './../parser/nodes';
 
-export function generate(root: DefNode) {
+export function generate(root: SourceFile) {
   const libraryCalls: string[] = [];
   const js = generateInternal(root, libraryCalls);
 
@@ -15,9 +15,11 @@ export function generate(root: DefNode) {
   return `${js}\n${libraryJs}`.trim();
 }
 
-function generateInternal(node: DefNode | ExpressionNode, libraryCalls: string[]): string {
+function generateInternal(node: SourceFile | DefNode | ExpressionNode, libraryCalls: string[]): string {
   if (node === null) {
     return '';
+  } else if (node instanceof SourceFile) {
+    return node.definitions.map(definition => generateInternal(definition, libraryCalls)).join('\n');
   } else if (node instanceof DefNode) {
     return generateFunction(node, libraryCalls);
   } else if (node instanceof IntegerLiteralNode) {
